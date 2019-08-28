@@ -5,9 +5,13 @@
   "author": "Isaac <imayolas@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@apla/clickhouse": "^1.6.0",
+    "bluebird": "^3.5.5",
     "husky": "^3.0.4",
     "lint-staged": "^9.2.5",
-    "migrate": "^1.6.2"
+    "migrate": "^1.6.2",
+    "minimist": "^1.2.0",
+    "moment": "^2.24.0"
   },
   "bin": {
     "chx": "./bin/clickhouseMigrateCli.js"
