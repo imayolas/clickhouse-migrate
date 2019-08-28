@@ -15,6 +15,6 @@
     "underscore": "^1.9.1"
   },
   "bin": {
-    "chx": "./bin/clickhouseMigrateCli.js"
+    "ch": "./bin/clickhouseMigrateCli.js"
   }
 }
