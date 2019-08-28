@@ -6,6 +6,8 @@ const argv = minimist(process.argv.slice(2))
 const _ = require("underscore")
 const path = require("path")
 const fs = require("fs")
+const {chGetLastMigrationLog} = require("../lib/utils")
+
 
 
 
@@ -67,7 +69,15 @@ const run = async (command, subCommand) => {
   }
 
   if(command === "migrate:rollback") {
-    return spawnAsync("npx", ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
+    const spawnParams = ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir]
+    if(subCommand !== "all") {
+      const lastMigrationLog = await chGetLastMigrationLog()
+      const lastRun = lastMigrationLog && lastMigrationLog.lastRun
+      if(lastRun) {
+        spawnParams.push("lastRun")
+      }
+    }
+    return spawnAsync("npx", spawnParams, spawnEnv)
   }
 
   if(command === "migrate:list") {
