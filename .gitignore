@@ -1,0 +1,67 @@
+# Ignore installed npm related files
+node_modules/**/*
+*/node_modules/**/*
+npm-debug.log
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
+*.sqlite3
+
+# Ignore all logfiles and tempfiles.
+log/**/*
+tmp/**/*
+crash.log
+
+# Ignore OSX .DS_Store
+.DS_Store
+
+# Ignore installed npm related files
+node_modules/**/*
+npm-debug.log
+
+# Ignore bower related files
+bower_components
+bower_components/**/*
+.bower-cache/
+.bower-registry/
+
+# Ignore compiled files
+dist
+
+# Ignore sublime project files
+*.sublime-project
+*.sublime-workspace
+
+# Ignore intelliJ settings
+.idea
+
+# # Not sure why we're ignoring this.
+# bin/*
+
+# Ignore Azure logs
+azure.err
+
+# Any directory starting with ignore_
+ignore_*
+
+# Ignore Vagrant files
+.vagrant
+
+# Ignore boilplate
+boilplate
+
+# Ignore development variables
+app/config/config-variables.js
+
+# Ignore .env file
+.env
+.env.*
+
+# Ignore Correos Express files
+cx-*
+
+# Ignore log files
+*.log
+
+# Ignore clickhouse volume
+clickhouse/volume
