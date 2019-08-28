@@ -56,7 +56,7 @@ const run = async (command, subCommand) => {
 
   if(command === "migrate:make") {
     if(_.isUndefined(subCommand) || _.isNull(subCommand)) {
-      throw new Error("migrate:make command requires a migration name")
+      return console.error("migrate:make command requires a migration name: ch migrate:make <filename>")
     }
 
     return spawnAsync("npx", ["migrate", "create", subCommand, "--migrations-dir", migrationsDir], spawnEnv)
@@ -73,6 +73,8 @@ const run = async (command, subCommand) => {
   if(command === "migrate:list") {
     return spawnAsync("npx", ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
   }
+
+  console.error(`Invalid command. You must run: ch migrate: <make, latest, rollback, list>`)
 
 }
 
