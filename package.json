@@ -11,7 +11,8 @@
     "lint-staged": "^9.2.5",
     "migrate": "^1.6.2",
     "minimist": "^1.2.0",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "underscore": "^1.9.1"
   },
   "bin": {
     "chx": "./bin/clickhouseMigrateCli.js"

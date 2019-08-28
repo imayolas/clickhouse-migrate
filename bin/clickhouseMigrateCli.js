@@ -3,10 +3,21 @@ const Promise = require("bluebird")
 const minimist = require("minimist")
 const { spawn } = require("child_process")
 const argv = minimist(process.argv.slice(2))
+const _ = require("underscore")
+const path = require("path")
+const fs = require("fs")
 
-const spawnAsync = (command, params = []) => {
+
+
+const spawnAsync = (command, params = [], env = {}) => {
   return new Promise((resolve, reject) => {
-    const spawned = spawn(command, params, { stdio: [process.stdin, process.stdout, process.stderr] })
+
+    const opts = {
+      env: {...process.env, ...env},
+      stdio: [process.stdin, process.stdout, process.stderr]
+    }
+
+    const spawned = spawn(command, params, opts)
     spawned.on("close", () => {
       resolve()
     })
@@ -16,14 +27,51 @@ const spawnAsync = (command, params = []) => {
   })
 }
 
-const run = (command, subCommand) => {
+const run = async (command, subCommand) => {
+
+  const customClickhouseFileExists = fs.existsSync(path.join(process.cwd(), "clickhousefile.js"))
+
+  if(!customClickhouseFileExists) {
+    throw new Error("clickhousefile.js is required at the project root")
+  }
+
+  const settings = require(path.join(process.cwd(), "clickhousefile"))
+
+  let migrationsDir = "migrations"
+
+  if(settings.migrations && settings.migrations.directory) {
+    migrationsDir = settings.migrations.directory
+  }
+
+  const spawnEnv = {
+    WAREHOUSE_HOST: settings.host,
+    WAREHOUSE_PORT: settings.port,
+    WAREHOUSE_USER: settings.user,
+    WAREHOUSE_PASSWORD: settings.password,
+    WAREHOUSE_DATABASE: settings.queryOptions.database,
+    WAREHOUSE_PROTOCOL: settings.protocol,
+  }
+
+  const storeDirName = path.join(__dirname, "../lib/stateStorage.js")
 
   if(command === "migrate:make") {
-    return spawnAsync("npx", ["migrate", "create", subCommand])
+    if(_.isUndefined(subCommand) || _.isNull(subCommand)) {
+      throw new Error("migrate:make command requires a migration name")
+    }
+
+    return spawnAsync("npx", ["migrate", "create", subCommand, "--migrations-dir", migrationsDir], spawnEnv)
   }
 
   if(command === "migrate:latest") {
-    return spawnAsync("npx", ["migrate", "latest", '--store=./lib/stateStorage.js'])
+    return spawnAsync("npx", ["migrate", "up", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
+  }
+
+  if(command === "migrate:rollback") {
+    return spawnAsync("npx", ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
+  }
+
+  if(command === "migrate:list") {
+    return spawnAsync("npx", ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
   }
 
 }
