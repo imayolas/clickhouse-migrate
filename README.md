@@ -9,6 +9,7 @@ yarn global add @dactilar/clickhouse-migrate
 ```
 
 ##### IMPORTANT
+
 You must have `.npmrc` correctly installed in your home directory to install private packages.
 
 
