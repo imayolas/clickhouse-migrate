@@ -6,16 +6,12 @@ const argv = minimist(process.argv.slice(2))
 const _ = require("underscore")
 const path = require("path")
 const fs = require("fs")
-const {chGetLastMigrationLog} = require("../lib/utils")
-
-
-
+const { chGetLastMigrationLog } = require("../lib/utils")
 
 const spawnAsync = (command, params = [], env = {}) => {
   return new Promise((resolve, reject) => {
-
     const opts = {
-      env: {...process.env, ...env},
+      env: { ...process.env, ...env },
       stdio: [process.stdin, process.stdout, process.stderr]
     }
 
@@ -30,10 +26,9 @@ const spawnAsync = (command, params = [], env = {}) => {
 }
 
 const run = async (command, subCommand) => {
-
   const customClickhouseFileExists = fs.existsSync(path.join(process.cwd(), "clickhousefile.js"))
 
-  if(!customClickhouseFileExists) {
+  if (!customClickhouseFileExists) {
     throw new Error("clickhousefile.js is required at the project root")
   }
 
@@ -41,51 +36,59 @@ const run = async (command, subCommand) => {
 
   let migrationsDir = "migrations"
 
-  if(settings.migrations && settings.migrations.directory) {
+  if (settings.migrations && settings.migrations.directory) {
     migrationsDir = settings.migrations.directory
   }
 
+  const auth = settings.auth.split(":")
+  if (auth.length > 2) {
+    console.error("Password must not contain this character (two consecutive semicolons) ':'")
+  }
+  
   const spawnEnv = {
     WAREHOUSE_HOST: settings.host,
     WAREHOUSE_PORT: settings.port,
-    WAREHOUSE_USER: settings.user,
-    WAREHOUSE_PASSWORD: settings.password,
+    WAREHOUSE_USER: auth[0],
+    WAREHOUSE_PASSWORD: auth[1],
     WAREHOUSE_DATABASE: settings.queryOptions.database,
-    WAREHOUSE_PROTOCOL: settings.protocol,
+    WAREHOUSE_PROTOCOL: settings.protocol
   }
 
   const storeDirName = path.join(__dirname, "../lib/stateStorage.js")
 
-  if(command === "migrate:make") {
-    if(_.isUndefined(subCommand) || _.isNull(subCommand)) {
+  if (command === "migrate:make") {
+    if (_.isUndefined(subCommand) || _.isNull(subCommand)) {
       return console.error("migrate:make command requires a migration name: ch migrate:make <filename>")
     }
 
     return spawnAsync("npx", ["migrate", "create", subCommand, "--migrations-dir", migrationsDir], spawnEnv)
   }
 
-  if(command === "migrate:latest") {
+  if (command === "migrate:latest") {
     return spawnAsync("npx", ["migrate", "up", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
   }
 
-  if(command === "migrate:rollback") {
+  if (command === "migrate:rollback") {
     const spawnParams = ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir]
-    if(subCommand !== "all") {
+    if (subCommand !== "all") {
       const lastMigrationLog = await chGetLastMigrationLog()
       const lastRun = lastMigrationLog && lastMigrationLog.lastRun
-      if(lastRun) {
+      if (lastRun) {
         spawnParams.push("lastRun")
       }
     }
     return spawnAsync("npx", spawnParams, spawnEnv)
   }
 
-  if(command === "migrate:list") {
-    return spawnAsync("npx", ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
+  if (command === "migrate:list") {
+    return spawnAsync(
+      "npx",
+      ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir],
+      spawnEnv
+    )
   }
 
   console.error(`Invalid command. You must run: ch migrate: <make, latest, rollback, list>`)
-
 }
 
 const command = argv._[0]
