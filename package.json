@@ -1,6 +1,6 @@
 {
   "name": "@relevanzz/clickhouse-migrate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./lib/clickhouseMigrate.js",
   "author": "Relevanzz <dev@relevanzz.com>",
   "license": "MIT",
