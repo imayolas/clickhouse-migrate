@@ -40,20 +40,13 @@ const run = async (command, subCommand) => {
     migrationsDir = settings.migrations.directory
   }
 
-  const auth = settings.auth.split(":")
-  if (auth.length > 2) {
-    console.error("Password must not contain this character (two consecutive semicolons) ':'")
-  }
-  
   const spawnEnv = {
     WAREHOUSE_HOST: settings.host,
     WAREHOUSE_PORT: settings.port,
-    WAREHOUSE_USER: auth[0],
-    WAREHOUSE_PASSWORD: auth[1],
+    WAREHOUSE_AUTH: settings.auth,
     WAREHOUSE_DATABASE: settings.queryOptions.database,
     WAREHOUSE_PROTOCOL: settings.protocol
   }
-
   const storeDirName = path.join(__dirname, "../lib/stateStorage.js")
 
   if (command === "migrate:make") {
