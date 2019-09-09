@@ -1,8 +1,8 @@
 {
-  "name": "@dactilar/clickhouse-migrate",
-  "version": "1.1.1",
+  "name": "@relevanzz/clickhouse-migrate",
+  "version": "1.0.0",
   "main": "./lib/clickhouseMigrate.js",
-  "author": "Isaac <imayolas@gmail.com>",
+  "author": "Relevanzz <dev@relevanzz.com>",
   "license": "MIT",
   "dependencies": {
     "@apla/clickhouse": "^1.6.0",
