@@ -58,11 +58,11 @@ const run = async (command, subCommand) => {
   }
 
   if (command === "migrate:latest") {
-    return spawnAsync("npx", ["migrate", "up", `--store=${storeDirName}`, "--migrations-dir", migrationsDir], spawnEnv)
+    return spawnAsync("npx", ["migrate", "up", `--store=${storeDirName}`, "--migrations-dir", migrationsDir, "--matches", '*.js'], spawnEnv)
   }
 
   if (command === "migrate:rollback") {
-    const spawnParams = ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir]
+    const spawnParams = ["migrate", "down", `--store=${storeDirName}`, "--migrations-dir", migrationsDir, "--matches", '*.js']
     if (subCommand !== "all") {
       const lastMigrationLog = await chGetLastMigrationLog()
       const lastRun = lastMigrationLog && lastMigrationLog.lastRun
@@ -76,7 +76,7 @@ const run = async (command, subCommand) => {
   if (command === "migrate:list") {
     return spawnAsync(
       "npx",
-      ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir],
+      ["migrate", "list", `--store=${storeDirName}`, "--migrations-dir", migrationsDir, "--matches", '*.js'],
       spawnEnv
     )
   }
