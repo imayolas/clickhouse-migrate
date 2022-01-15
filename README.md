@@ -3,18 +3,14 @@
 ##### CLI Install
 
 ```
-npm install -g @dactilar/clickhouse-migrate
+npm install -g @imayolas/clickhouse-migrate
 # -- or --
-yarn global add @dactilar/clickhouse-migrate
+yarn global add @imayolas/clickhouse-migrate
 ```
-
-##### IMPORTANT
-
-You must have `.npmrc` correctly installed in your home directory to install private packages.
 
 
 ##### Install
-Requires a `clickhouse.js` file at the root of the target repository.
+Requires a `clickhouse.js` file at the root of the directory where you run the migrations command.
 
 ```javascript
 // clickhouse.js example
