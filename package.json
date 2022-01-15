@@ -1,6 +1,6 @@
 {
   "name": "@imayolas/clickhouse-migrate",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "./lib/clickhouseMigrate.js",
   "author": "Isaac Mayolas <imayolas@gmail.com>",
   "license": "MIT",
